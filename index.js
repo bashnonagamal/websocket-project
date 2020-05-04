@@ -9,15 +9,22 @@ var server = app.listen(4000, function(){
 });
 
 
-
 // Static files
 app.use(express.static('public'));
-
-
 
 // Socket.io Setup
 var io = socket(server);
 
 io.on('connection', function(socket){
-    console.log('Connection Created Successfuly!', socket.id);
+
+    // Handle chat event
+    socket.on('chat', function(data){
+        // console.log(data);
+        io.sockets.emit('chat', data);
+    });
+
+    // Handle typing event
+    socket.on('typing', function(data){
+        socket.broadcast.emit('typing', data);
+    });
 })
